@@ -1,15 +1,17 @@
 import React, { useEffect, useReducer } from 'react';
 import styled from '@emotion/styled';
 import { Form } from "antd";
-import { MockData } from './mock';
+import { mockList } from './mock';
 import NodeList from './node-list';
+
 
 
 import 'react-virtualized/styles.css' //导入样式
 // @ts-ignore
-import {AutoSizer, List} from 'react-virtualized'; //导入list组件
+import { AutoSizer, List } from 'react-virtualized'; //导入list组件
 
-const datasReducer = (state: any, action: any) => {
+import VirtualList from 'rc-virtual-list';
+ const datasReducer = (state: any, action: any) => {
   const {type, payload} = action;
   switch (type) {
     case 'CONCAT':
@@ -35,8 +37,8 @@ function rowRenderer({
   return (
     <div key={key} style={style}>
         <div>
-          <h1>index: {index}</h1>
-          <NodeList dataSource={MockData.list[index].resource_quote_list} nodeNum={index}/>
+          <h3>index: {index} site: {mockList[index].site.name} </h3>
+          <NodeList dataSource={mockList[index].resource_quote_list} nodeNum={index}/>
         </div>
     </div>
   );
@@ -44,16 +46,14 @@ function rowRenderer({
 
 function LongTable() {
   const [form] = Form.useForm();
-  // const [datas, setDatas] = useState<any>(MockData.list)
-  const [datas, dispatch] = useReducer(datasReducer, MockData.list);
+  const [datas, dispatch] = useReducer(datasReducer, mockList);
   const onFinish = (values: any) => {
     console.log(values, 'values')
   };
   useEffect(() => {
-    console.log(MockData.list)
+    console.log(mockList)
   }, [])
-  // @ts-ignore
-  // @ts-ignore
+ 
   return (
     <React.StrictMode>
       <LongTableDiv>
@@ -90,8 +90,18 @@ function LongTable() {
           {/*    </div>*/}
           {/*  )}*/}
           {/*</AutoSizer>*/}
-          <div> { datas[0].resource_quote_list[0].quoted_rent_amount} </div>
           <List width={1400} height={600} rowCount={datas.length} rowHeight={800} rowRenderer={rowRenderer}/>,
+          
+          {/* <VirtualList data={mockList} height={800} itemHeight={300} itemKey="id">
+            {(item: any, index:number) => {
+              return (
+              <div key={index}>
+                site: {item.site.name} 
+                index: {index} 
+                <NodeList dataSource={item.resource_quote_list} nodeNum={index}/>
+              </div>)
+            }}
+          </VirtualList>; */}
         </Form>
       </LongTableDiv>
     </React.StrictMode>
